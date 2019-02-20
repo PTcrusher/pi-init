@@ -1,5 +1,8 @@
 #!/bin/bash
 GUID='67952747-d79b-45fd-8678-62be0bebb822'
-DESCRIPTION='Demo 2'
-DEPENDS_ON=( 'c97ef5d7-c984-4003-9014-660854bf4a43' '99a3f756-fa2b-4b2a-8295-cdf8c50469b0' )
-echo "Hello i'm ${DESCRIPTION}"
+DESCRIPTION='RaspberryPi GPIO Python Package (Raspbian Stretch Lite)'
+DEPENDS_ON=( )
+sudo apt-get install python-pip
+pip install RPi.GPIO
+sudo apt-get install picap
+picap-setup
