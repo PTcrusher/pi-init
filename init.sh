@@ -48,8 +48,8 @@ dependancies () {
     if [ ${#DEPENDANCIES[@]} -ne 0 ]; then
         for related_fl in "${DEPENDANCIES[@]}"
         do
-            mkdir -p ${path}"/"${related_fl}"/" 
-            dependancies ${related_fl} ${path}"/"${related_fl}
+            mkdir -p "${path}/${related_fl}" 
+            dependancies ${related_fl} "${path}/${related_fl}"
         done
     fi
 }
@@ -103,6 +103,7 @@ fill_dependancies() {
     do
         fil=`basename -- "${fil}"`; fil="${fil%.*}"
         set_variable GUID "${fil}" 2
+        mkdir -p "temp/${GUID}"
         dependancies ${fil} "temp/${GUID}"
     done
 }
@@ -204,6 +205,15 @@ do
     if ! [[ -z "${flagged}" ]]
     then
         #use the dependancies structure to find out the correct install sequence
+        #add the select installation script first
+        if [[ -z "${count_of_scripts[$guid]}" ]]
+        then
+            count_of_scripts+=( ["${guid}"]=1 )
+            unordered_install+=( "${guid}" )
+        else
+            count_of_scripts[${guid}]++
+        fi
+        #end of add the selected installation script first region
         let i=1
         while [ `find temp/${guid}/ -mindepth $i -maxdepth $i -type d -printf '%f\n' | awk 'END{ print NR }'` -ne 0 ]
         do
@@ -212,7 +222,7 @@ do
                 if [[ -z "${count_of_scripts[$direct]}" ]]
                 then
                     count_of_scripts+=( ["${direct}"]=1 )
-                    unordered_install+=("${direct}" )
+                    unordered_install+=( "${direct}" )
                 else
                     count_of_scripts[${direct}]++
                 fi
@@ -230,11 +240,12 @@ unset options_hash
 declare -A options_hash
 fill_hash_with_standalone_scripts options_hash true
 
-echo -e "\nDependencies detected:"
+echo -e "\nInstall order*:"
 for opt in "${ordered_install[@]}"
 do
     echo "${opt}: ${options_hash[$opt]}"
 done
+echo "* you may see additional entries in this list due to dependancies"
 
 echo ""
 proceed=false
