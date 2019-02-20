@@ -42,7 +42,7 @@ Please keep in mind that all scripts must have an **unique GUID and Description*
 git clone https://github.com/PTcrusher/pi-init.git
 cd pi-init
 chmod +x init.sh
-./init.sh
+sudo ./init.sh
 ```
 
 
