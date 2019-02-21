@@ -200,14 +200,13 @@ do
 done
 
 echo -e "\nOptions chosen:"
+#add the select installation scripts first
 for opt in "${!options_hash[@]}"
 do
     guid=`echo "${options_hash[$opt]}" | cut -d':' -f1`
     flagged=`echo "${options_hash[$opt]}" | cut -d':' -f2`
     if ! [[ -z "${flagged}" ]]
     then
-        #use the dependancies structure to find out the correct install sequence
-        #add the select installation script first
         if [[ -z "${count_of_scripts[$guid]}" ]]
         then
             count_of_scripts+=( ["${guid}"]=1 )
@@ -215,7 +214,18 @@ do
         else
             count_of_scripts[${guid}]++
         fi
-        #end of add the selected installation script first region
+        echo "${guid}: ${opt}"  
+    fi
+done
+#end of add the selected installation scripts first region
+
+#use the dependancies structure to find out the correct install sequence
+for opt in "${!options_hash[@]}"
+do
+    guid=`echo "${options_hash[$opt]}" | cut -d':' -f1`
+    flagged=`echo "${options_hash[$opt]}" | cut -d':' -f2`
+    if ! [[ -z "${flagged}" ]]
+    then
         let i=1
         while [ `find temp/${guid}/ -mindepth $i -maxdepth $i -type d -printf '%f\n' | awk 'END{ print NR }'` -ne 0 ] && [ "${NO_DEPENDANCY_CHECK}" = false ]
         do
@@ -231,11 +241,9 @@ do
             done    
             let i++
         done
-        #end of use the dependancies structure to find out the correct install sequence region
-
-        echo "${guid}: ${opt}"  
     fi
 done
+#end of use the dependancies structure to find out the correct install sequence region
 
 reverse_array unordered_install ordered_install
 unset options_hash
