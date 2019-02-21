@@ -1,6 +1,6 @@
 #!/bin/bash
 GUID='bcfe5615-b7ef-447e-8f5f-c4e682a0e935'
-DESCRIPTION='Safe Shutdown Button (Pin 21)'
+DESCRIPTION='Safe Shutdown Button Pin 21'
 DEPENDS_ON=( '67952747-d79b-45fd-8678-62be0bebb822' )
 #The .off_button script was authored by AndrewH7 and belongs to him (www.instructables.com/member/AndrewH7)
 [ -f /home/pi/.off_button ] || cat > /home/pi/.off_button <<EOF
