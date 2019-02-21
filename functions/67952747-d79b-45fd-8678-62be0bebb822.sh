@@ -5,4 +5,3 @@ DEPENDS_ON=( )
 
 [ `dpkg -l | grep -E '^ii' | grep python-pip | wc -l` -eq 0 ] && sudo apt-get install python-pip
 [ `pip show RPi.GPIO | wc -l` -eq 0 ] && pip install RPi.GPIO
-[ `dpkg -l | grep -E '^ii' | grep picap | wc -l` -eq 0 ] && sudo apt-get install picap && picap-setup
