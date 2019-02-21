@@ -130,11 +130,13 @@ unset VERBOSE
 # end of set environment region
 
 # handle command line options
-while getopts "v" c
+NO_DEPENDANCY_CHECK=false
+while getopts "vn" c
 do
     echo "Processing $c : OPTIND is $OPTIND"
     case $c in
         v) VERBOSE=true ;;
+        n) NO_DEPENDANCY_CHECK=true;;
     esac
 done
 
@@ -215,7 +217,7 @@ do
         fi
         #end of add the selected installation script first region
         let i=1
-        while [ `find temp/${guid}/ -mindepth $i -maxdepth $i -type d -printf '%f\n' | awk 'END{ print NR }'` -ne 0 ]
+        while [ `find temp/${guid}/ -mindepth $i -maxdepth $i -type d -printf '%f\n' | awk 'END{ print NR }'` -ne 0 ] && [ "${NO_DEPENDANCY_CHECK}" = false ]
         do
             for direct in `find temp/${guid}/ -mindepth $i -maxdepth $i -type d -printf '%f\n'`;
             do

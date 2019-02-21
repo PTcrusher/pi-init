@@ -3,7 +3,7 @@ GUID='bcfe5615-b7ef-447e-8f5f-c4e682a0e935'
 DESCRIPTION='Safe Shutdown Button (Pin 21)'
 DEPENDS_ON=( '67952747-d79b-45fd-8678-62be0bebb822' )
 #The .off_button script was authored by AndrewH7 and belongs to him (www.instructables.com/member/AndrewH7)
-cat > /home/pi/.off_button <<EOF
+[ -f /home/pi/.off_button ] || cat > /home/pi/.off_button <<EOF
 #!/bin/python
 #This script was authored by AndrewH7 and belongs to him (www.instructables.com/member/AndrewH7)
 #You have permission to modify and use this script only for your own personal usage
@@ -25,7 +25,8 @@ GPIO.setmode(GPIO.BCM)
 #WARNING: this will change between Pi versions
 #Check yours first and adjust accordingly
 
-GPIO.setup(gpio_pin_number, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(gpio_pin_number, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(gpio_pin_number, GPIO.IN)
 #It's very important the pin is an input to avoid short-circuits
 #The pull-up resistor means the pin is high by default
 
@@ -41,7 +42,10 @@ except:
 GPIO.cleanup()
 #Revert all GPIO pins to their normal states (i.e. input = safe)
 EOF
-sudo cp /etc/rc.local /etc/rc.local.bck
-head -n -1 /etc/rc.local.bck | sudo tee /etc/rc.local
-echo -e "python /home/pi/.off_button &\nexit 0" | sudo tee -a /etc/rc.local
-python /home/pi/.off_button &
+if [ `grep "off_button" /etc/rc.local | wc -l` -eq 0 ]
+then
+    sudo cp /etc/rc.local /etc/rc.local.bck
+    head -n -1 /etc/rc.local.bck | sudo tee /etc/rc.local
+    echo -e "python /home/pi/.off_button &\nexit 0" | sudo tee -a /etc/rc.local
+    python /home/pi/.off_button &
+fi
